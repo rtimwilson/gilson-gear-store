@@ -1,166 +1,173 @@
-import { Link } from 'react-router-dom';
-import { MapPin, Mail, Phone, ExternalLink } from 'lucide-react';
+import { Link } from 'react-router'
+import { Mail, Phone, MapPin, Facebook, Instagram, Linkedin } from 'lucide-react'
 
 const footerLinks = {
   shop: [
-    { href: '/shop', label: 'All Products' },
-    { href: '/shop/apparel', label: 'Apparel' },
-    { href: '/shop/headwear', label: 'Headwear' },
-    { href: '/shop/drinkware', label: 'Drinkware' },
-    { href: '/shop/hockey', label: 'Hockey & Sports' },
-    { href: '/shop/kids', label: 'Kids & Family' },
-  ],
-  support: [
-    { href: '/size-guide', label: 'Size Guide' },
-    { href: '/returns', label: 'Returns & Exchanges' },
-    { href: '/shipping', label: 'Shipping Info' },
-    { href: '/contact', label: 'Contact Us' },
-    { href: '/faq', label: 'FAQ' },
+    { name: 'All Products', href: '/shop' },
+    { name: 'Apparel', href: '/shop/apparel' },
+    { name: 'Headwear', href: '/shop/headwear' },
+    { name: 'Drinkware', href: '/shop/drinkware' },
+    { name: 'Hockey & Sports', href: '/shop/hockey' },
+    { name: 'Premium Gifts', href: '/shop/premium' },
   ],
   company: [
-    { href: '/about', label: 'About Gil-Son' },
-    { href: 'https://gilsonconstruction.ca', label: 'Gil-Son Construction', external: true },
-    { href: '/careers', label: 'Careers' },
+    { name: 'About Gil-Son', href: 'https://gilson-website.vercel.app/' },
+    { name: 'Careers', href: 'https://gilson-website.vercel.app/careers' },
+    { name: 'Contact', href: 'https://gilson-website.vercel.app/contact' },
   ],
-};
+  support: [
+    { name: 'Size Guide', href: '/size-guide' },
+    { name: 'Shipping Info', href: '/shipping' },
+    { name: 'Returns', href: '/returns' },
+    { name: 'Employee Login', href: '/account' },
+  ],
+}
 
-export function Footer() {
-  const currentYear = new Date().getFullYear();
-
+export default function Footer() {
   return (
-    <footer className="section-dark relative">
-      {/* Main footer content */}
-      <div className="container-xl py-16 lg:py-20">
-        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
-          {/* Brand column */}
-          <div className="lg:col-span-4">
-            <Link to="/" className="inline-block">
+    <footer className="section-navy">
+      <div className="container">
+        {/* Main Footer */}
+        <div className="py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+          {/* Brand Column */}
+          <div className="lg:col-span-1">
+            <Link to="/" className="inline-block mb-6">
               <img
                 src="/gilson-logo.png"
-                alt="Gil-Son Gear"
-                className="h-14 w-auto brightness-0 invert"
+                alt="Gil-Son Construction"
+                className="h-12 w-auto brightness-0 invert"
               />
             </Link>
-            <p className="mt-6 text-text-light-secondary leading-relaxed max-w-sm">
-              Official merchandise store for Gil-Son Construction. Premium gear for employees,
-              customers, and families across Atlantic Canada.
+            <p className="text-[var(--color-text-on-dark-secondary)] text-[var(--text-small)] mb-6 max-w-xs">
+              Official merchandise from Gil-Son Construction. Premium quality gear for employees, customers, and fans across Atlantic Canada.
             </p>
-            <div className="mt-6 flex items-center gap-2 text-text-light">
-              <MapPin className="w-5 h-5 text-gilson-red" />
-              <span className="font-heading font-medium">Halifax, Nova Scotia</span>
+            <div className="flex gap-4">
+              <a
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-[var(--color-gilson-red)] transition-colors"
+                aria-label="Facebook"
+              >
+                <Facebook size={18} />
+              </a>
+              <a
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-[var(--color-gilson-red)] transition-colors"
+                aria-label="Instagram"
+              >
+                <Instagram size={18} />
+              </a>
+              <a
+                href="https://linkedin.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-[var(--color-gilson-red)] transition-colors"
+                aria-label="LinkedIn"
+              >
+                <Linkedin size={18} />
+              </a>
             </div>
           </div>
 
-          {/* Links columns */}
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-8">
-            {/* Shop */}
-            <div>
-              <h3 className="font-display text-xl tracking-wider text-text-light mb-6">SHOP</h3>
-              <ul className="space-y-3">
-                {footerLinks.shop.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      to={link.href}
-                      className="text-text-light-secondary hover:text-gilson-red transition-colors duration-200 flex items-center gap-1"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          {/* Shop Links */}
+          <div>
+            <h3 className="font-heading font-semibold text-white text-[var(--text-body)] mb-4">
+              Shop
+            </h3>
+            <ul className="space-y-3">
+              {footerLinks.shop.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    to={link.href}
+                    className="text-[var(--color-text-on-dark-secondary)] text-[var(--text-small)] hover:text-white transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-            {/* Support */}
-            <div>
-              <h3 className="font-display text-xl tracking-wider text-text-light mb-6">SUPPORT</h3>
-              <ul className="space-y-3">
-                {footerLinks.support.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      to={link.href}
-                      className="text-text-light-secondary hover:text-gilson-red transition-colors duration-200"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          {/* Company Links */}
+          <div>
+            <h3 className="font-heading font-semibold text-white text-[var(--text-body)] mb-4">
+              Company
+            </h3>
+            <ul className="space-y-3">
+              {footerLinks.company.map((link) => (
+                <li key={link.name}>
+                  <a
+                    href={link.href}
+                    target={link.href.startsWith('http') ? '_blank' : undefined}
+                    rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                    className="text-[var(--color-text-on-dark-secondary)] text-[var(--text-small)] hover:text-white transition-colors"
+                  >
+                    {link.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-            {/* Company */}
-            <div>
-              <h3 className="font-display text-xl tracking-wider text-text-light mb-6">COMPANY</h3>
-              <ul className="space-y-3">
-                {footerLinks.company.map((link) => (
-                  <li key={link.href}>
-                    {link.external ? (
-                      <a
-                        href={link.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-text-light-secondary hover:text-gilson-red transition-colors duration-200 inline-flex items-center gap-1"
-                      >
-                        {link.label}
-                        <ExternalLink className="w-3 h-3" />
-                      </a>
-                    ) : (
-                      <Link
-                        to={link.href}
-                        className="text-text-light-secondary hover:text-gilson-red transition-colors duration-200"
-                      >
-                        {link.label}
-                      </Link>
-                    )}
-                  </li>
-                ))}
-              </ul>
-
-              {/* Contact info */}
-              <div className="mt-8 space-y-3">
+          {/* Contact Info */}
+          <div>
+            <h3 className="font-heading font-semibold text-white text-[var(--text-body)] mb-4">
+              Contact
+            </h3>
+            <ul className="space-y-4">
+              <li className="flex items-start gap-3">
+                <MapPin size={18} className="text-[var(--color-gilson-red)] mt-0.5 flex-shrink-0" />
+                <span className="text-[var(--color-text-on-dark-secondary)] text-[var(--text-small)]">
+                  3650 Kempt Road<br />
+                  Halifax, NS B3K 4X8
+                </span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Phone size={18} className="text-[var(--color-gilson-red)] flex-shrink-0" />
                 <a
-                  href="mailto:gear@gilsonconstruction.ca"
-                  className="flex items-center gap-2 text-text-light-secondary hover:text-gilson-red transition-colors"
+                  href="tel:+19024536100"
+                  className="text-[var(--color-text-on-dark-secondary)] text-[var(--text-small)] hover:text-white transition-colors"
                 >
-                  <Mail className="w-4 h-4" />
-                  gear@gilsonconstruction.ca
+                  (902) 453-6100
                 </a>
+              </li>
+              <li className="flex items-center gap-3">
+                <Mail size={18} className="text-[var(--color-gilson-red)] flex-shrink-0" />
                 <a
-                  href="tel:+19024292922"
-                  className="flex items-center gap-2 text-text-light-secondary hover:text-gilson-red transition-colors"
+                  href="mailto:gear@gilson.ca"
+                  className="text-[var(--color-text-on-dark-secondary)] text-[var(--text-small)] hover:text-white transition-colors"
                 >
-                  <Phone className="w-4 h-4" />
-                  (902) 429-2922
+                  gear@gilson.ca
                 </a>
-              </div>
-            </div>
+              </li>
+            </ul>
           </div>
         </div>
-      </div>
 
-      {/* Bottom bar */}
-      <div className="border-t border-border-dark">
-        <div className="container-xl py-6">
-          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-            <p className="text-sm text-text-light-muted">
-              © {currentYear} Gil-Son Construction Limited. All rights reserved.
-            </p>
-            <div className="flex items-center gap-6">
-              <Link
-                to="/privacy"
-                className="text-sm text-text-light-muted hover:text-text-light transition-colors"
-              >
-                Privacy Policy
-              </Link>
-              <Link
-                to="/terms"
-                className="text-sm text-text-light-muted hover:text-text-light transition-colors"
-              >
-                Terms of Service
-              </Link>
-            </div>
+        {/* Bottom Bar */}
+        <div className="py-6 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-[var(--color-text-on-dark-secondary)] text-[var(--text-xs)]">
+            &copy; {new Date().getFullYear()} Gil-Son Construction Limited. All rights reserved.
+          </p>
+          <div className="flex items-center gap-6">
+            <a
+              href="/privacy"
+              className="text-[var(--color-text-on-dark-secondary)] text-[var(--text-xs)] hover:text-white transition-colors"
+            >
+              Privacy Policy
+            </a>
+            <a
+              href="/terms"
+              className="text-[var(--color-text-on-dark-secondary)] text-[var(--text-xs)] hover:text-white transition-colors"
+            >
+              Terms of Service
+            </a>
           </div>
         </div>
       </div>
     </footer>
-  );
+  )
 }

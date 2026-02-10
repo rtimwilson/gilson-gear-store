@@ -1,23 +1,76 @@
 import { Link } from 'react-router'
-import { Minus, Plus, Trash2, ArrowRight, ShoppingBag } from 'lucide-react'
+import { Minus, Plus, Trash2, ArrowRight, ShoppingBag, MapPin } from 'lucide-react'
 import { useState } from 'react'
 
 interface CartItem {
-  id: number
+  id: string
   name: string
   price: number
   quantity: number
   size: string
   colour: string
+  slug: string
+}
+
+// Canadian provincial/territorial tax rates (from CLAUDE.md)
+interface TaxConfig {
+  label: string
+  rate: number
+  description: string
+}
+
+const provincialTax: Record<string, TaxConfig> = {
+  NS: { label: 'HST', rate: 0.14, description: 'Nova Scotia HST (14%)' },
+  NB: { label: 'HST', rate: 0.15, description: 'New Brunswick HST (15%)' },
+  NL: { label: 'HST', rate: 0.15, description: 'Newfoundland & Labrador HST (15%)' },
+  PE: { label: 'HST', rate: 0.15, description: 'Prince Edward Island HST (15%)' },
+  ON: { label: 'HST', rate: 0.13, description: 'Ontario HST (13%)' },
+  BC: { label: 'GST+PST', rate: 0.12, description: 'British Columbia GST+PST (12%)' },
+  MB: { label: 'GST+RST', rate: 0.13, description: 'Manitoba GST+RST (13%)' },
+  SK: { label: 'GST+PST', rate: 0.11, description: 'Saskatchewan GST+PST (11%)' },
+  QC: { label: 'GST+QST', rate: 0.14975, description: 'Quebec GST+QST (14.975%)' },
+  AB: { label: 'GST', rate: 0.05, description: 'Alberta GST (5%)' },
+  YT: { label: 'GST', rate: 0.05, description: 'Yukon GST (5%)' },
+  NT: { label: 'GST', rate: 0.05, description: 'Northwest Territories GST (5%)' },
+  NU: { label: 'GST', rate: 0.05, description: 'Nunavut GST (5%)' },
+}
+
+const provinceOptions = [
+  { value: 'NS', label: 'Nova Scotia' },
+  { value: 'NB', label: 'New Brunswick' },
+  { value: 'NL', label: 'Newfoundland & Labrador' },
+  { value: 'PE', label: 'Prince Edward Island' },
+  { value: 'ON', label: 'Ontario' },
+  { value: 'QC', label: 'Quebec' },
+  { value: 'BC', label: 'British Columbia' },
+  { value: 'AB', label: 'Alberta' },
+  { value: 'MB', label: 'Manitoba' },
+  { value: 'SK', label: 'Saskatchewan' },
+  { value: 'YT', label: 'Yukon' },
+  { value: 'NT', label: 'Northwest Territories' },
+  { value: 'NU', label: 'Nunavut' },
+]
+
+// Shipping thresholds
+const FREE_SHIPPING_THRESHOLD = 75
+const FLAT_RATE_MID = 9.99   // orders $25-74.99
+const FLAT_RATE_LOW = 12.99  // orders under $25
+const MIN_FOR_MID_RATE = 25
+
+function getShippingCost(subtotal: number): number {
+  if (subtotal >= FREE_SHIPPING_THRESHOLD) return 0
+  if (subtotal >= MIN_FOR_MID_RATE) return FLAT_RATE_MID
+  return FLAT_RATE_LOW
 }
 
 export default function Cart() {
   const [items, setItems] = useState<CartItem[]>([
-    { id: 1, name: 'Gil-Son Classic Tee', price: 34.99, quantity: 2, size: 'L', colour: 'Navy' },
-    { id: 2, name: 'Stanley Tumbler 40oz', price: 59.99, quantity: 1, size: 'One Size', colour: 'Black' },
+    { id: 'tee-001', name: 'Gil-Son Premium T-Shirt', price: 29.99, quantity: 2, size: 'L', colour: 'Navy', slug: 'gilson-premium-tee' },
+    { id: 'drink-001', name: 'Stanley Quencher H2.0 40oz', price: 59.99, quantity: 1, size: '40oz', colour: 'Navy', slug: 'stanley-quencher-40oz' },
   ])
+  const [province, setProvince] = useState('NS') // Default to Nova Scotia (HQ)
 
-  const updateQuantity = (id: number, delta: number) => {
+  const updateQuantity = (id: string, delta: number) => {
     setItems(items.map(item => {
       if (item.id === id) {
         const newQty = Math.max(1, item.quantity + delta)
@@ -27,13 +80,14 @@ export default function Cart() {
     }))
   }
 
-  const removeItem = (id: number) => {
+  const removeItem = (id: string) => {
     setItems(items.filter(item => item.id !== id))
   }
 
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  const shipping = subtotal >= 75 ? 0 : 9.99
-  const tax = subtotal * 0.15 // NS HST
+  const shipping = getShippingCost(subtotal)
+  const taxConfig = provincialTax[province]
+  const tax = subtotal * taxConfig.rate
   const total = subtotal + shipping + tax
 
   if (items.length === 0) {
@@ -77,7 +131,7 @@ export default function Cart() {
 
       <div className="container py-8 lg:py-12">
         <h1 className="font-display text-headline text-[var(--color-text-primary)] mb-8">
-          YOUR CART ({items.length})
+          YOUR CART ({items.reduce((sum, item) => sum + item.quantity, 0)})
         </h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -89,17 +143,23 @@ export default function Cart() {
                 className="flex gap-4 p-4 bg-white border border-[var(--color-border-light)] rounded-[var(--radius-xl)]"
               >
                 {/* Image */}
-                <div className="w-24 h-24 flex-shrink-0 bg-[var(--color-surface-tertiary)] rounded-[var(--radius-lg)] overflow-hidden">
+                <Link
+                  to={`/product/${item.slug}`}
+                  className="w-24 h-24 flex-shrink-0 bg-[var(--color-surface-tertiary)] rounded-[var(--radius-lg)] overflow-hidden"
+                >
                   <div className="w-full h-full bg-gradient-to-br from-[var(--color-gilson-blue)]/20 to-[var(--color-gilson-red)]/20" />
-                </div>
+                </Link>
 
                 {/* Details */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <h3 className="font-heading font-semibold text-[var(--color-text-primary)] mb-1">
+                      <Link
+                        to={`/product/${item.slug}`}
+                        className="font-heading font-semibold text-[var(--color-text-primary)] mb-1 hover:text-[var(--color-gilson-red)] transition-colors"
+                      >
                         {item.name}
-                      </h3>
+                      </Link>
                       <p className="text-[var(--text-small)] text-[var(--color-text-tertiary)]">
                         {item.colour} / {item.size}
                       </p>
@@ -142,12 +202,20 @@ export default function Cart() {
             {shipping > 0 && (
               <div className="p-4 bg-[var(--color-surface-secondary)] rounded-[var(--radius-lg)]">
                 <p className="text-[var(--text-small)] text-[var(--color-text-secondary)] mb-2">
-                  Add <span className="font-heading font-bold text-[var(--color-gilson-red)]">${(75 - subtotal).toFixed(2)}</span> more for free shipping!
+                  {subtotal >= MIN_FOR_MID_RATE ? (
+                    <>
+                      Add <span className="font-heading font-bold text-[var(--color-gilson-red)]">${(FREE_SHIPPING_THRESHOLD - subtotal).toFixed(2)}</span> more for free shipping!
+                    </>
+                  ) : (
+                    <>
+                      Add <span className="font-heading font-bold text-[var(--color-gilson-red)]">${(FREE_SHIPPING_THRESHOLD - subtotal).toFixed(2)}</span> more for free shipping!
+                    </>
+                  )}
                 </p>
                 <div className="h-2 bg-[var(--color-border-light)] rounded-full overflow-hidden">
                   <div
                     className="h-full bg-[var(--color-gilson-red)] rounded-full transition-all"
-                    style={{ width: `${Math.min(100, (subtotal / 75) * 100)}%` }}
+                    style={{ width: `${Math.min(100, (subtotal / FREE_SHIPPING_THRESHOLD) * 100)}%` }}
                   />
                 </div>
               </div>
@@ -160,6 +228,25 @@ export default function Cart() {
               <h2 className="font-heading font-bold text-[var(--text-title)] text-[var(--color-text-primary)] mb-6">
                 Order Summary
               </h2>
+
+              {/* Province Selector for Tax */}
+              <div className="mb-6">
+                <label className="flex items-center gap-2 text-[var(--text-small)] text-[var(--color-text-secondary)] mb-2">
+                  <MapPin size={16} />
+                  Shipping Province
+                </label>
+                <select
+                  value={province}
+                  onChange={(e) => setProvince(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-[var(--radius-md)] border border-[var(--color-border-light)] bg-white text-[var(--color-text-primary)] font-heading text-[var(--text-small)] focus:outline-none focus:border-[var(--color-gilson-red)] transition-colors"
+                >
+                  {provinceOptions.map((prov) => (
+                    <option key={prov.value} value={prov.value}>
+                      {prov.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
               <div className="space-y-4 mb-6">
                 <div className="flex justify-between text-[var(--color-text-secondary)]">
@@ -177,7 +264,7 @@ export default function Cart() {
                   </span>
                 </div>
                 <div className="flex justify-between text-[var(--color-text-secondary)]">
-                  <span>Tax (NS HST 15%)</span>
+                  <span>Tax ({taxConfig.description})</span>
                   <span className="font-heading">${tax.toFixed(2)}</span>
                 </div>
                 <div className="pt-4 border-t border-[var(--color-border-light)] flex justify-between">

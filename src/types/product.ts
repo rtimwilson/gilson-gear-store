@@ -57,6 +57,13 @@ export interface Product {
   reviewCount: number
   soldCount: number
 
+  // Fulfillment
+  sku: string
+  weight?: string
+  fulfillmentChannel: 'printful' | 'premium'
+  moq?: number           // Minimum order quantity for premium suppliers
+  supplier?: string      // Supplier name for premium products
+
   // Dates
   createdAt: string
   updatedAt: string

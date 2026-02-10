@@ -1,70 +1,47 @@
 import { Link } from 'react-router'
-import { ArrowRight, Truck, Shield, Heart, Award } from 'lucide-react'
+import { ArrowRight, Truck, Shield, Heart, Award, Star } from 'lucide-react'
+import { categories, bundles, getFeaturedProducts, getBundleProducts } from '../data/products'
+import type { Product } from '../types/product'
 
-const categories = [
-  { name: 'Apparel', slug: 'apparel', image: '/images/categories/apparel.jpg', count: 24 },
-  { name: 'Headwear', slug: 'headwear', image: '/images/categories/headwear.jpg', count: 12 },
-  { name: 'Drinkware', slug: 'drinkware', image: '/images/categories/drinkware.jpg', count: 18 },
-  { name: 'Hockey & Sports', slug: 'hockey', image: '/images/categories/hockey.jpg', count: 15 },
-  { name: 'Kids & Family', slug: 'kids', image: '/images/categories/kids.jpg', count: 20 },
-  { name: 'Bags & Carry', slug: 'bags', image: '/images/categories/bags.jpg', count: 8 },
-  { name: 'Accessories', slug: 'accessories', image: '/images/categories/accessories.jpg', count: 16 },
-  { name: 'Premium Gifts', slug: 'premium', image: '/images/categories/premium.jpg', count: 10 },
-]
+// Map badge types to display styles
+function getBadgeClass(badge: Product['badge']): string {
+  switch (badge) {
+    case 'new':
+      return 'badge badge-new'
+    case 'best-seller':
+      return 'badge badge-sale'
+    case 'premium':
+      return 'badge badge-employee'
+    case 'popular':
+      return 'badge badge-new'
+    case 'sale':
+      return 'badge badge-sale'
+    default:
+      return 'badge'
+  }
+}
 
-const featuredProducts = [
-  {
-    id: 1,
-    name: 'Gil-Son Classic Tee',
-    price: 34.99,
-    employeePrice: 24.99,
-    image: '/images/products/classic-tee.jpg',
-    badge: 'Best Seller',
-  },
-  {
-    id: 2,
-    name: 'Premium Work Jacket',
-    price: 149.99,
-    employeePrice: 119.99,
-    image: '/images/products/work-jacket.jpg',
-    badge: 'New',
-  },
-  {
-    id: 3,
-    name: 'Stanley Tumbler 40oz',
-    price: 59.99,
-    employeePrice: 44.99,
-    image: '/images/products/stanley-tumbler.jpg',
-    badge: null,
-  },
-  {
-    id: 4,
-    name: 'Branded Hockey Stick',
-    price: 89.99,
-    employeePrice: 69.99,
-    image: '/images/products/hockey-stick.jpg',
-    badge: 'Popular',
-  },
-]
+function getBadgeLabel(badge: Product['badge']): string {
+  switch (badge) {
+    case 'new':
+      return 'New'
+    case 'best-seller':
+      return 'Best Seller'
+    case 'premium':
+      return 'Premium'
+    case 'popular':
+      return 'Popular'
+    case 'sale':
+      return 'Sale'
+    default:
+      return ''
+  }
+}
 
-const bundles = [
-  {
-    name: 'Welcome Kit',
-    description: 'Everything you need to start your Gil-Son journey',
-    price: 79.99,
-    employeePrice: 59.99,
-    items: ['Classic Tee', 'Branded Cap', 'Stainless Tumbler', 'Sticker Pack'],
-    image: '/images/bundles/welcome-kit.jpg',
-  },
-  {
-    name: 'Premium Starter',
-    description: 'Level up with our premium essentials collection',
-    price: 199.99,
-    employeePrice: 149.99,
-    items: ['Work Jacket', 'Premium Hoodie', 'YETI Tumbler', 'Leather Patch Cap'],
-    image: '/images/bundles/premium-starter.jpg',
-  },
-]
+const featuredProducts = getFeaturedProducts(4)
+
+// Use first 3 bundles for homepage display
+const displayBundles = bundles.slice(0, 3)
 
 export default function Home() {
   return (
@@ -135,7 +112,7 @@ export default function Home() {
                     {category.name}
                   </h3>
                   <p className="text-white/70 text-[var(--text-small)]">
-                    {category.count} Products
+                    {category.productCount} Products
                   </p>
                 </div>
 
@@ -174,7 +151,7 @@ export default function Home() {
             {featuredProducts.map((product) => (
               <Link
                 key={product.id}
-                to={`/product/${product.id}`}
+                to={`/product/${product.slug}`}
                 className="group card card-bordered"
               >
                 {/* Image */}
@@ -183,8 +160,8 @@ export default function Home() {
                   <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gilson-blue)]/20 to-[var(--color-gilson-red)]/20" />
 
                   {product.badge && (
-                    <span className={`absolute top-3 left-3 badge ${product.badge === 'New' ? 'badge-new' : product.badge === 'Best Seller' ? 'badge-sale' : 'badge-employee'}`}>
-                      {product.badge}
+                    <span className={`absolute top-3 left-3 ${getBadgeClass(product.badge)}`}>
+                      {getBadgeLabel(product.badge)}
                     </span>
                   )}
 
@@ -196,17 +173,29 @@ export default function Home() {
 
                 {/* Details */}
                 <div className="p-4">
-                  <h3 className="font-heading font-semibold text-[var(--color-text-primary)] mb-2 group-hover:text-[var(--color-gilson-red)] transition-colors">
+                  <p className="text-[var(--text-xs)] text-[var(--color-text-tertiary)] mb-1 uppercase tracking-wider">
+                    {product.brand}
+                  </p>
+                  <h3 className="font-heading font-semibold text-[var(--color-text-primary)] mb-2 group-hover:text-[var(--color-gilson-red)] transition-colors line-clamp-2">
                     {product.name}
                   </h3>
+
+                  {/* Rating */}
+                  <div className="flex items-center gap-1 mb-2">
+                    <Star size={14} className="fill-yellow-400 text-yellow-400" />
+                    <span className="text-[var(--text-xs)] text-[var(--color-text-secondary)]">
+                      {product.rating} ({product.reviewCount})
+                    </span>
+                  </div>
+
                   <div className="flex items-center gap-2">
                     <span className="font-heading font-bold text-[var(--color-gilson-red)]">
                       ${product.price.toFixed(2)} CAD
                     </span>
-                    <span className="text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
-                      Employee: ${product.employeePrice.toFixed(2)}
-                    </span>
                   </div>
+                  <span className="text-[var(--text-xs)] text-[var(--color-text-tertiary)]">
+                    Employee: ${product.employeePrice.toFixed(2)}
+                  </span>
                 </div>
               </Link>
             ))}
@@ -297,52 +286,62 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {bundles.map((bundle) => (
-              <div
-                key={bundle.name}
-                className="card card-bordered flex flex-col md:flex-row overflow-hidden"
-              >
-                {/* Image Side */}
-                <div className="md:w-2/5 aspect-square md:aspect-auto bg-gradient-to-br from-[var(--color-gilson-navy)] to-[var(--color-gilson-blue)]" />
-
-                {/* Content Side */}
-                <div className="md:w-3/5 p-6 lg:p-8 flex flex-col">
-                  <h3 className="font-heading font-bold text-[var(--text-title)] text-[var(--color-text-primary)] mb-2">
-                    {bundle.name}
-                  </h3>
-                  <p className="text-[var(--color-text-secondary)] text-[var(--text-small)] mb-4">
-                    {bundle.description}
-                  </p>
-
-                  <ul className="mb-6 space-y-2">
-                    {bundle.items.map((item) => (
-                      <li
-                        key={item}
-                        className="flex items-center gap-2 text-[var(--color-text-secondary)] text-[var(--text-small)]"
-                      >
-                        <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-gilson-red)]" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className="mt-auto">
-                    <div className="flex items-baseline gap-3 mb-4">
-                      <span className="font-heading font-bold text-[var(--text-title)] text-[var(--color-gilson-red)]">
-                        ${bundle.price.toFixed(2)} CAD
-                      </span>
-                      <span className="text-[var(--text-small)] text-[var(--color-text-tertiary)]">
-                        Employee: ${bundle.employeePrice.toFixed(2)}
-                      </span>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {displayBundles.map((bundle) => {
+              const bundleProducts = getBundleProducts(bundle)
+              return (
+                <div
+                  key={bundle.id}
+                  className="card card-bordered flex flex-col overflow-hidden"
+                >
+                  {/* Image */}
+                  <div className="aspect-video bg-gradient-to-br from-[var(--color-gilson-navy)] to-[var(--color-gilson-blue)] relative">
+                    <div className="absolute top-3 left-3 badge badge-sale">
+                      Save ${bundle.savings.toFixed(2)}
                     </div>
-                    <button className="btn btn-primary w-full">
-                      Add Bundle to Cart
-                    </button>
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-6 flex flex-col flex-1">
+                    <h3 className="font-heading font-bold text-[var(--text-title)] text-[var(--color-text-primary)] mb-2">
+                      {bundle.name}
+                    </h3>
+                    <p className="text-[var(--color-text-secondary)] text-[var(--text-small)] mb-4">
+                      {bundle.description}
+                    </p>
+
+                    <ul className="mb-6 space-y-2">
+                      {bundleProducts.map((product) => (
+                        <li
+                          key={product.id}
+                          className="flex items-center gap-2 text-[var(--color-text-secondary)] text-[var(--text-small)]"
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-gilson-red)] flex-shrink-0" />
+                          {product.name}
+                        </li>
+                      ))}
+                    </ul>
+
+                    <div className="mt-auto">
+                      <div className="flex items-baseline gap-3 mb-1">
+                        <span className="font-heading font-bold text-[var(--text-title)] text-[var(--color-gilson-red)]">
+                          ${bundle.bundlePrice.toFixed(2)} CAD
+                        </span>
+                        <span className="text-[var(--text-small)] text-[var(--color-text-tertiary)] line-through">
+                          ${bundle.retailPrice.toFixed(2)}
+                        </span>
+                      </div>
+                      <p className="text-[var(--text-xs)] text-[var(--color-text-tertiary)] mb-4">
+                        Employee: ${bundle.employeeBundlePrice.toFixed(2)} CAD
+                      </p>
+                      <button className="btn btn-primary w-full">
+                        Add Bundle to Cart
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </section>

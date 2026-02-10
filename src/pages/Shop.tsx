@@ -31,7 +31,12 @@ function ProductCard({ product }: { product: Product }) {
     >
       {/* Image */}
       <div className="relative aspect-square bg-[var(--color-surface-tertiary)] overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gilson-blue)]/20 to-[var(--color-gilson-red)]/20" />
+        <img
+          src={product.thumbnailUrl}
+          alt={product.name}
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          loading="lazy"
+        />
 
         {product.badge && (
           <span className={`absolute top-3 left-3 badge ${badgeClass}`}>

@@ -25,7 +25,12 @@ function ProductCard({ product }: { product: Product }) {
     >
       {/* Image */}
       <div className="relative aspect-square bg-[var(--color-surface-tertiary)] overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gilson-blue)]/20 to-[var(--color-gilson-red)]/20" />
+        <img
+          src={product.thumbnailUrl}
+          alt={product.name}
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          loading="lazy"
+        />
 
         {product.badge && (
           <span className={`absolute top-3 left-3 badge ${badgeClass}`}>
@@ -265,8 +270,14 @@ export default function Category() {
                   to={`/shop/${cat.slug}`}
                   className="group relative aspect-[4/3] rounded-[var(--radius-xl)] overflow-hidden bg-[var(--color-surface-tertiary)]"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gilson-navy)] to-[var(--color-gilson-blue)] opacity-80 group-hover:opacity-90 transition-opacity" />
-                  <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center">
+                  <img
+                    src={cat.image}
+                    alt={cat.name}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-gilson-navy)]/80 via-[var(--color-gilson-navy)]/40 to-transparent" />
+                  <div className="absolute inset-0 flex flex-col items-end justify-end p-4 text-left">
                     <h3 className="font-heading font-semibold text-white text-[var(--text-title)] mb-1">
                       {cat.name}
                     </h3>

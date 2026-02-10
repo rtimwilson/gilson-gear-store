@@ -77,7 +77,7 @@ export const categories: ProductCategory[] = [
     name: 'Hockey & Sports',
     slug: 'hockey',
     description: 'Custom jerseys, pucks, and gear for Atlantic Canada hockey fans',
-    image: '/images/categories/hockey.jpg',
+    image: '/images/categories/hockey-sports.jpg',
     productCount: 8,
     subcategories: [
       { id: 'jerseys', name: 'Hockey Jerseys', slug: 'jerseys', productCount: 3 },
@@ -90,7 +90,7 @@ export const categories: ProductCategory[] = [
     name: 'Kids & Family',
     slug: 'kids',
     description: 'Gear for the whole Gil-Son family',
-    image: '/images/categories/kids.jpg',
+    image: '/images/categories/kids-family.jpg',
     productCount: 10,
     subcategories: [
       { id: 'kids-apparel', name: 'Kids Apparel', slug: 'kids-apparel', productCount: 6 },
@@ -102,7 +102,7 @@ export const categories: ProductCategory[] = [
     name: 'Bags & Carry',
     slug: 'bags',
     description: 'Backpacks, duffels, and coolers built to last',
-    image: '/images/categories/bags.jpg',
+    image: '/images/categories/bags-carry.jpg',
     productCount: 8,
     subcategories: [
       { id: 'backpacks', name: 'Backpacks', slug: 'backpacks', productCount: 3 },
@@ -128,7 +128,7 @@ export const categories: ProductCategory[] = [
     name: 'Premium Gifts',
     slug: 'premium',
     description: 'High-end gifts from Carhartt, YETI, Stanley, and Leatherman',
-    image: '/images/categories/premium.jpg',
+    image: '/images/categories/premium-gifts.jpg',
     productCount: 10,
     subcategories: [
       { id: 'carhartt', name: 'Carhartt', slug: 'carhartt', productCount: 4 },
@@ -1107,8 +1107,8 @@ export const products: Product[] = [
     colours: ['Multicolour'],
     sizes: ['Pack of 10'],
     variants: [],
-    images: ['/images/products/hardhat-stickers.jpg'],
-    thumbnailUrl: '/images/products/hardhat-stickers-thumb.jpg',
+    images: ['/images/products/sticker-pack.jpg'],
+    thumbnailUrl: '/images/products/sticker-pack-thumb.jpg',
     badge: undefined,
     isNew: false,
     isBestSeller: false,

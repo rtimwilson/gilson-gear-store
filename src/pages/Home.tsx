@@ -48,18 +48,15 @@ export default function Home() {
     <>
       {/* Hero Section */}
       <section className="section-dark relative overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-5">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-            }}
+        {/* Hero Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src="/images/hero/hero-banner.jpg"
+            alt="Gil-Son branded merchandise flat-lay"
+            className="w-full h-full object-cover"
           />
+          <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-gilson-navy)]/90 via-[var(--color-gilson-navy)]/70 to-transparent" />
         </div>
-
-        {/* Red Gradient Accent */}
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-[var(--color-gilson-red)]/20 to-transparent" />
 
         <div className="container relative">
           <div className="py-24 lg:py-32 max-w-3xl">
@@ -103,11 +100,16 @@ export default function Home() {
                 to={`/shop/${category.slug}`}
                 className="group relative aspect-square rounded-[var(--radius-xl)] overflow-hidden bg-[var(--color-surface-tertiary)]"
               >
-                {/* Placeholder gradient - replace with actual images */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gilson-navy)] to-[var(--color-gilson-blue)] opacity-80 group-hover:opacity-90 transition-opacity" />
+                {/* Category Banner Image */}
+                <img
+                  src={category.image}
+                  alt={category.name}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-gilson-navy)]/80 via-[var(--color-gilson-navy)]/40 to-transparent" />
 
                 {/* Content */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center">
+                <div className="absolute inset-0 flex flex-col items-end justify-end p-4 text-left">
                   <h3 className="font-heading font-semibold text-white text-[var(--text-title)] mb-1">
                     {category.name}
                   </h3>
@@ -156,8 +158,12 @@ export default function Home() {
               >
                 {/* Image */}
                 <div className="relative aspect-square bg-[var(--color-surface-tertiary)] overflow-hidden">
-                  {/* Placeholder - replace with actual images */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gilson-blue)]/20 to-[var(--color-gilson-red)]/20" />
+                  <img
+                    src={product.thumbnailUrl}
+                    alt={product.name}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    loading="lazy"
+                  />
 
                   {product.badge && (
                     <span className={`absolute top-3 left-3 ${getBadgeClass(product.badge)}`}>
@@ -294,8 +300,17 @@ export default function Home() {
                   key={bundle.id}
                   className="card card-bordered flex flex-col overflow-hidden"
                 >
-                  {/* Image */}
-                  <div className="aspect-video bg-gradient-to-br from-[var(--color-gilson-navy)] to-[var(--color-gilson-blue)] relative">
+                  {/* Image — show first product in bundle */}
+                  <div className="aspect-video bg-[var(--color-surface-tertiary)] relative overflow-hidden">
+                    {bundleProducts.length > 0 && (
+                      <img
+                        src={bundleProducts[0].images[0]}
+                        alt={bundle.name}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                     <div className="absolute top-3 left-3 badge badge-sale">
                       Save ${bundle.savings.toFixed(2)}
                     </div>

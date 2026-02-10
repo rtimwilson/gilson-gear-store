@@ -10,6 +10,7 @@ interface CartItem {
   size: string
   colour: string
   slug: string
+  image: string
 }
 
 // Canadian provincial/territorial tax rates (from CLAUDE.md)
@@ -65,8 +66,8 @@ function getShippingCost(subtotal: number): number {
 
 export default function Cart() {
   const [items, setItems] = useState<CartItem[]>([
-    { id: 'tee-001', name: 'Gil-Son Premium T-Shirt', price: 29.99, quantity: 2, size: 'L', colour: 'Navy', slug: 'gilson-premium-tee' },
-    { id: 'drink-001', name: 'Stanley Quencher H2.0 40oz', price: 59.99, quantity: 1, size: '40oz', colour: 'Navy', slug: 'stanley-quencher-40oz' },
+    { id: 'tee-001', name: 'Gil-Son Premium T-Shirt', price: 29.99, quantity: 2, size: 'L', colour: 'Navy', slug: 'gilson-premium-tee', image: '/images/products/premium-tee-navy-thumb.jpg' },
+    { id: 'drink-001', name: 'Stanley Quencher H2.0 40oz', price: 59.99, quantity: 1, size: '40oz', colour: 'Navy', slug: 'stanley-quencher-40oz', image: '/images/products/stanley-40oz-navy-thumb.jpg' },
   ])
   const [province, setProvince] = useState('NS') // Default to Nova Scotia (HQ)
 
@@ -147,7 +148,11 @@ export default function Cart() {
                   to={`/product/${item.slug}`}
                   className="w-24 h-24 flex-shrink-0 bg-[var(--color-surface-tertiary)] rounded-[var(--radius-lg)] overflow-hidden"
                 >
-                  <div className="w-full h-full bg-gradient-to-br from-[var(--color-gilson-blue)]/20 to-[var(--color-gilson-red)]/20" />
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-full h-full object-cover"
+                  />
                 </Link>
 
                 {/* Details */}

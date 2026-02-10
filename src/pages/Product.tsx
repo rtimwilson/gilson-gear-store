@@ -59,6 +59,7 @@ export default function Product() {
   const [quantity, setQuantity] = useState(1)
   const [selectedSize, setSelectedSize] = useState<string>('')
   const [selectedColour, setSelectedColour] = useState<string>('')
+  const [activeImageIndex, setActiveImageIndex] = useState(0)
 
   // Set defaults once product loads
   if (product && !selectedSize && product.sizes.length > 0) {
@@ -126,34 +127,39 @@ export default function Product() {
           {/* Image Gallery */}
           <div>
             <div className="aspect-square bg-[var(--color-surface-tertiary)] rounded-[var(--radius-xl)] overflow-hidden mb-4 relative">
-              <div className="w-full h-full bg-gradient-to-br from-[var(--color-gilson-blue)]/20 to-[var(--color-gilson-red)]/20 flex items-center justify-center">
-                <span className="text-6xl opacity-20">
-                  {product.category === 'apparel' && '👕'}
-                  {product.category === 'headwear' && '🧢'}
-                  {product.category === 'drinkware' && '🥤'}
-                  {product.category === 'hockey' && '🏒'}
-                  {product.category === 'kids' && '👶'}
-                  {product.category === 'bags' && '🎒'}
-                  {product.category === 'accessories' && '🔧'}
-                  {product.category === 'premium' && '🎁'}
-                </span>
-              </div>
+              <img
+                src={product.images[activeImageIndex] || product.thumbnailUrl}
+                alt={`${product.name} - Image ${activeImageIndex + 1}`}
+                className="w-full h-full object-cover"
+              />
               {product.badge && (
                 <span className={`absolute top-4 left-4 ${getBadgeClass(product.badge)}`}>
                   {getBadgeLabel(product.badge)}
                 </span>
               )}
             </div>
-            <div className="grid grid-cols-4 gap-4">
-              {[1, 2, 3, 4].map((i) => (
-                <button
-                  key={i}
-                  className="aspect-square bg-[var(--color-surface-tertiary)] rounded-[var(--radius-lg)] overflow-hidden border-2 border-transparent hover:border-[var(--color-gilson-red)] transition-colors"
-                >
-                  <div className="w-full h-full bg-gradient-to-br from-[var(--color-gilson-blue)]/10 to-[var(--color-gilson-red)]/10" />
-                </button>
-              ))}
-            </div>
+            {product.images.length > 1 && (
+              <div className="grid grid-cols-4 gap-4">
+                {product.images.map((img, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setActiveImageIndex(i)}
+                    className={`aspect-square bg-[var(--color-surface-tertiary)] rounded-[var(--radius-lg)] overflow-hidden border-2 transition-colors ${
+                      activeImageIndex === i
+                        ? 'border-[var(--color-gilson-red)]'
+                        : 'border-transparent hover:border-[var(--color-gilson-red)]'
+                    }`}
+                  >
+                    <img
+                      src={img}
+                      alt={`${product.name} - Thumbnail ${i + 1}`}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Product Info */}
@@ -391,7 +397,12 @@ export default function Product() {
                   className="group card card-bordered"
                 >
                   <div className="relative aspect-square bg-[var(--color-surface-tertiary)] overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-gilson-blue)]/20 to-[var(--color-gilson-red)]/20" />
+                    <img
+                      src={related.thumbnailUrl}
+                      alt={related.name}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      loading="lazy"
+                    />
                     {related.badge && (
                       <span className={`absolute top-3 left-3 ${getBadgeClass(related.badge)}`}>
                         {getBadgeLabel(related.badge)}
